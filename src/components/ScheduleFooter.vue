@@ -3,7 +3,7 @@
     <b-row>
       <b-col>
         <strong>
-          Print out current as of	{{ now }}<br />
+          Print out current as of	{{ now | dateFormat('M/D h:mm a') }}<br />
           To sign-up or make changes, go to http://bit.ly/scc-room-210<br />
           or scan the QR Code with your phone's camera
         </strong>
@@ -20,6 +20,17 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class ScheduleFooter extends Vue {
-  now = Date.now();
+  now = new Date()
+
+  mounted (): void {
+    this.updateTime()
+  }
+
+  private updateTime(): void {
+    setTimeout(() => {
+      this.now = new Date();
+      this.updateTime();         
+    }, 15000);
+  }
 }
 </script>
