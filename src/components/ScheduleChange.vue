@@ -39,7 +39,7 @@ export default class ScheduleChange extends Vue {
     const doc = await docRef.get();
 
     if (doc.exists) {
-      this.value = doc.data()?.initials;
+      this.newValue = doc.data()?.initials;
     }
   }
 

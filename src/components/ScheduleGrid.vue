@@ -142,15 +142,15 @@ export default class ScheduleGrid extends Vue {
     this.activeData = slot
     this.cellData = ""
     this.showModal = true
-    console.log(slot)
   }
 
   private async saveCellData(bvModalEvt: BvModalEvent): Promise<void> {
+    // TODO Convert to Batch Transaction
     let docRef = db.collection('dates').doc(this.activeData.date)
         .collection('rooms').doc(this.activeData.room)
         .collection('timeSlot').doc(this.activeData.timeSlot);
 
-    const doc = await docRef.set({initials: this.cellData});
+    await docRef.set({initials: this.cellData});
 
     const foundIndex = this.items.findIndex(x => x.room == this.activeData.room && x.timeSlot == this.activeData.timeSlot);
     this.items[foundIndex][this.activeData.date] = this.cellData;
