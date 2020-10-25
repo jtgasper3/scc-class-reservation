@@ -47,14 +47,14 @@ import { BFormInput } from 'bootstrap-vue';
 
 @Component
 export default class ScheduleChange extends Vue {
-  newValue = ""
-  @Prop() value!: string
+  newValue = "";
+  @Prop() value!: string;
   @Prop() data!: any;
 
-  @Ref() readonly input!: BFormInput
+  @Ref() readonly input!: BFormInput;
 
   mounted(): void {
-    this.newValue = this.value
+    this.newValue = this.value;
     this.loadData();
   }
 
@@ -63,16 +63,20 @@ export default class ScheduleChange extends Vue {
         .collection('rooms').doc(this.data.room)
         .collection('timeSlot').doc(this.data.timeSlot);
 
-    const doc = await docRef.get();
+    try {
+      const doc = await docRef.get({ source: 'server' });
 
-    if (doc.exists) {
-      this.newValue = doc.data()?.initials;
+      if (doc.exists) {
+        this.newValue = doc.data()?.initials;
+      }
+    } catch(err) {
+
     }
   }
 
   private clearInput() {
-    this.newValue = ""
-    this.input.focus()
+    this.newValue = "";
+    this.input.focus();
     this.$emit('input', this.newValue);
   }
 }

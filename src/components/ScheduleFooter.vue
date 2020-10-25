@@ -19,7 +19,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ScheduleGrid extends Vue {
-  now = Date.now()
+export default class ScheduleFooter extends Vue {
+  now = Date.now();
 }
 </script>
