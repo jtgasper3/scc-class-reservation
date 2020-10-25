@@ -21,8 +21,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-const reduction = 100
-
 @Component
 export default class ScheduleGrid extends Vue {
   now = Date.now()

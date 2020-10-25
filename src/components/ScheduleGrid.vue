@@ -19,7 +19,7 @@
       </template>
       <template #cell(room)="data">
         <div
-          v-if="data.item.room === 0"
+          v-if="data.item.room === '0'"
           class="text-nowrap"
           style="border: 2px solid black;"
         >  
@@ -34,7 +34,7 @@
       </template>
       <template #cell()="data">
         <div
-          v-if="data.item.room === 0"
+          v-if="data.item.room === '0'"
           class="text-nowrap"
         >
         &nbsp;
@@ -43,12 +43,13 @@
           v-else-if="data.value !== ''"
           class="text-nowrap"
           style="border: 2px solid black;"
+          @click="updateData(data.field.key, data.item.room, data.item.timeSlot)"
         >
-          <!--<b-form-input v-model="data.value" />-->
           {{data.value}}
         </div>
         <div
           v-else
+          @click="updateData(data.field.key, data.item.room, data.item.timeSlot)"
           class="p-3"
           style="border: 2px solid black;"
         >
@@ -56,20 +57,41 @@
         </div>
       </template>
     </b-table>
+    <b-modal v-model="showModal"
+      @ok = "saveCellData"
+    >
+      <schedule-change
+        :data="activeData"
+        v-model="cellData"
+      />
+    </b-modal>
   </b-col>
 </b-row>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { BvModalEvent } from 'bootstrap-vue';
+import ScheduleChange from '@/components/ScheduleChange.vue'
+
 import db from '@/firebase'
+
+declare type UnsubscribeHandler = () => void;
 
 const reduction = 80
 
-@Component
+@Component({
+  components: {
+    ScheduleChange
+  }
+})
 export default class ScheduleGrid extends Vue {
-
   windowHeight = window.innerHeight-reduction;
+  unsubscribeHandler!: UnsubscribeHandler;
+
+  showModal = false
+  activeData = { 'date': '', 'room': '', 'timeSlot': '' };
+  cellData = ""
 
   fields = [
     { key: 'room', label: '', stickyColumn: true, isRowHeader: true },
@@ -83,7 +105,7 @@ export default class ScheduleGrid extends Vue {
     { key: '7-Dec', label: '7-Dec' }
   ]
 
-  items = []
+  items: Record<string,unknown>[]=[];
   
   @Prop() private msg!: string;
 
@@ -100,6 +122,7 @@ export default class ScheduleGrid extends Vue {
   }
 
   beforeDestroy(): void { 
+    this.unsubscribeHandler()
     window.removeEventListener('resize', this.onResize); 
   }
 
@@ -109,9 +132,30 @@ export default class ScheduleGrid extends Vue {
 
   private loadData(): void {
     const docRef = db.collection('dates').doc('test2');
-    docRef.onSnapshot(doc => {
+    this.unsubscribeHandler = docRef.onSnapshot(doc => {
       this.items = doc.data()?.data;
     })
+  }
+
+  private updateData(field: string, room: string, timeSlot: string): void {
+    const slot = { 'date': field, 'room': room, 'timeSlot': timeSlot }
+    this.activeData = slot
+    this.cellData = ""
+    this.showModal = true
+    console.log(slot)
+  }
+
+  private async saveCellData(bvModalEvt: BvModalEvent): Promise<void> {
+    let docRef = db.collection('dates').doc(this.activeData.date)
+        .collection('rooms').doc(this.activeData.room)
+        .collection('timeSlot').doc(this.activeData.timeSlot);
+
+    const doc = await docRef.set({initials: this.cellData});
+
+    const foundIndex = this.items.findIndex(x => x.room == this.activeData.room && x.timeSlot == this.activeData.timeSlot);
+    this.items[foundIndex][this.activeData.date] = this.cellData;
+    docRef = db.collection('dates').doc('test2');
+    await docRef.set({data: this.items})
   }
 }
 </script>
