@@ -58,7 +58,9 @@
         </div>
       </template>
     </b-table>
-    <b-modal v-model="showModal"
+    <b-modal
+      v-model="showModal"
+      title="Reserve Slot"
       @ok = "saveCellData"
     >
       <schedule-change
