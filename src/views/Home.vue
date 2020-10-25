@@ -1,13 +1,13 @@
 <template>
   <b-container fluid="lg" class="bg-gradient-success">
     <b-row class="mb-3">
-      <b-col cols="5" class="text-center text-nowrap" >
+      <b-col md="12" lg="5" class="text-center text-nowrap" >
         <strong>LAB SIGNUP SHEET FOR ALL STUDENTS</strong>
       </b-col>
-      <b-col class="text-center  text-nowrap">
+      <b-col md="12" lg="5" class="text-center text-nowrap">
         <strong>ONE HOUR PER STUDENT PER DAY</strong>
       </b-col>
-      <b-col class="text-center">
+      <b-col md="12" lg="2" class="text-center">
         <strong>USE INITIALS</strong>
       </b-col>
     </b-row>
