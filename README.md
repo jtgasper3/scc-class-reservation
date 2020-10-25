@@ -10,9 +10,9 @@ npm install
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Compiles, minifies and deploys to production
 ```
-npm run build
+npm run build && firebase deploy
 ```
 
 ### Lints and fixes files
@@ -22,3 +22,5 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+> Note `firebase` commands require logging in: `firebase login`

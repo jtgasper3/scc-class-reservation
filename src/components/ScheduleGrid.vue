@@ -19,11 +19,11 @@
       </template>
       <template #cell(room)="data">
         <div
-          v-if="data.item.a == undefined"
+          v-if="data.item.room === 0"
           class="text-nowrap"
           style="border: 2px solid black;"
         >  
-          {{ data.item.time }}
+          {{ data.item.timeSlot }}
         </div>
         <div
           v-else
@@ -34,7 +34,7 @@
       </template>
       <template #cell()="data">
         <div
-          v-if="data.item.a == undefined"
+          v-if="data.item.room === 0"
           class="text-nowrap"
         >
         &nbsp;
@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import db from '@/firebase'
 
 const reduction = 80
 
@@ -72,45 +73,17 @@ export default class ScheduleGrid extends Vue {
 
   fields = [
     { key: 'room', label: '', stickyColumn: true, isRowHeader: true },
-    { key: 'a', label: '26-Oct', variant: 'success' },
-    { key: 'b', label: '2-Nov' },
-    { key: 'c', label: '9-Nov', variant: 'warning' },
-    { key: 'd', label: '16-Nov' },
-    { key: 'e', label: '23-Nov', variant: 'primary' },
-    { key: 'f', label: '30-Nov' },
-    { key: 'g', label: '1-Dec', variant: 'info' },
-    { key: 'h', label: '7-Dec' }
+    { key: '26-Oct', label: '26-Oct', variant: 'success' },
+    { key: '2-Nov', label: '2-Nov' },
+    { key: '9-Nov', label: '9-Nov', variant: 'warning' },
+    { key: '16-Nov', label: '16-Nov' },
+    { key: '23-Nov', label: '23-Nov', variant: 'primary' },
+    { key: '30-Nov', label: '30-Nov' },
+    { key: '1-Dec', label: '1-Dec', variant: 'info' },
+    { key: '7-Dec', label: '7-Dec' }
   ]
 
-  items = [
-    { room: 0, time: '1-2pm' },
-    { room: 1, time: '1-2pm', a: 'Nancy Gasper', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 2, time: '1-2pm', a: '', b: 'Nancy Gasper', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 3, time: '1-2pm', a: '', b: '', c: '', d: 'JGasper', e: '', f: '', g: '', h: '' },
-    { room: 4, time: '1-2pm', a: '', b: '', c: '', d: '', e: 'JG', f: 'JGasper', g: '', h: '' },
-    { room: 5, time: '1-2pm', a: '', b: '', c: 'JohnG', d: '', e: '', f: '', g: '', h: 'JohnG' },
-    { room: 6, time: '1-2pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 7, time: '1-2pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 8, time: '1-2pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 0, time: '2-3pm' },
-    { room: 1, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 2, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 3, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 4, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 5, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 6, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 7, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 8, time: '2-3pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 0, time: '3-4pm' },
-    { room: 1, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 2, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 3, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 4, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 5, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 6, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 7, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' },
-    { room: 8, time: '3-4pm', a: '', b: '', c: '', d: '', e: '', f: '', g: '', h: '' }
-  ]
+  items = []
   
   @Prop() private msg!: string;
 
@@ -122,6 +95,8 @@ export default class ScheduleGrid extends Vue {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
+    
+    this.loadData()
   }
 
   beforeDestroy(): void { 
@@ -130,7 +105,14 @@ export default class ScheduleGrid extends Vue {
 
   private onResize(): void {
       this.windowHeight = window.innerHeight-reduction;
-    }
+  }
+
+  private loadData(): void {
+    const docRef = db.collection('dates').doc('test2');
+    docRef.onSnapshot(doc => {
+      this.items = doc.data()?.data;
+    })
+  }
 }
 </script>
 
