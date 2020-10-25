@@ -7,6 +7,7 @@
       responsive="md"
       :items="items"
       :fields="fields"
+      small
     >
       <!-- We are using utility class `text-nowrap` to help illustrate horizontal scrolling -->
       <template #head(room)="">
@@ -21,7 +22,7 @@
         <div
           v-if="data.item.room === '0'"
           class="text-nowrap"
-          style="border: 2px solid black;"
+          style="border: 1px solid black;"
         >  
           {{ data.item.timeSlot }}
         </div>
@@ -41,8 +42,8 @@
         </div>
         <div
           v-else-if="data.value !== ''"
-          class="text-nowrap"
-          style="border: 2px solid black;"
+          class="text-nowrap p-1"
+          style="border: 1px solid black;"
           @click="updateData(data.field.key, data.item.room, data.item.timeSlot)"
         >
           {{data.value}}
@@ -50,8 +51,8 @@
         <div
           v-else
           @click="updateData(data.field.key, data.item.room, data.item.timeSlot)"
-          class="p-3"
-          style="border: 2px solid black;"
+          class="text-nowrap p-3"
+          style="border: 1px solid black;"
         >
           &nbsp;
         </div>
