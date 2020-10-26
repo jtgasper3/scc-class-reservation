@@ -4,7 +4,6 @@ import VueFilterDateFormat from '@vuejs-community/vue-filter-date-format';
 
 import App from './App.vue';
 import router from './router';
-import store from './store';
 
 import './registerServiceWorker';
 
@@ -30,6 +29,5 @@ Vue.component('BIconXCircle', BIconXCircle);
 const vm = new Vue({
   data: {instanceId: '/'},
   router,
-  store,
   render: (h) => h(App),
 }).$mount('#app');
