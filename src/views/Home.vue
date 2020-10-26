@@ -25,8 +25,8 @@ import ScheduleGrid from '@/components/ScheduleGrid.vue';
 @Component({
   components: {
     ScheduleFooter,
-    ScheduleGrid,
-  },
+    ScheduleGrid
+  }
 })
 export default class Home extends Vue {}
 </script>

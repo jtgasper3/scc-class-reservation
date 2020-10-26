@@ -59,7 +59,8 @@ export default class ScheduleChange extends Vue {
   }
 
   private async loadData(): Promise<void> {
-    const docRef = db.collection('dates').doc(this.data.date)
+    const docRef = db.collection('instance').doc(this.$root.$instanceId)
+        .collection('dates').doc(this.data.date)
         .collection('rooms').doc(this.data.room)
         .collection('timeSlot').doc(this.data.timeSlot);
 

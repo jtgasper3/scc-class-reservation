@@ -6,7 +6,7 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
+    path: '*',
     name: 'Home',
     component: Home,
   },
@@ -18,6 +18,7 @@ const routes: Array<RouteConfig> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
+  
 ];
 
 const router = new VueRouter({

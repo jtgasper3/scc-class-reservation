@@ -114,6 +114,11 @@ export default class ScheduleGrid extends Vue {
   online = navigator.onLine;
   showBackOnline = false;
 
+  get instanceId(): string {
+    console.log(this.$root.$instanceId);
+    return this.$root.$instanceId.length >= 10 ? this.$root.$instanceId : '';
+  }
+
   get winHeight(): string {
     return this.windowHeight + 'px';
   }
@@ -155,7 +160,7 @@ export default class ScheduleGrid extends Vue {
   }
 
   private loadData(): void {
-    const docRef = db.collection('dates').doc('test2');
+    const docRef = db.collection('instance').doc(this.$root.$instanceId);
     this.unsubscribeHandler = docRef.onSnapshot({ includeMetadataChanges: true }, doc => {
       // this.online = doc.metadata.fromCache === false;
       this.items = doc.data()?.data;
@@ -181,7 +186,8 @@ export default class ScheduleGrid extends Vue {
   private async saveCellData(bvModalEvt: BvModalEvent): Promise<void> {
     const batch = db.batch();
 
-    let docRef = db.collection('dates').doc(this.activeData.date)
+    let docRef = db.collection('instance').doc(this.$root.$instanceId)
+        .collection('dates').doc(this.activeData.date)
         .collection('rooms').doc(this.activeData.room)
         .collection('timeSlot').doc(this.activeData.timeSlot);
 
@@ -190,7 +196,7 @@ export default class ScheduleGrid extends Vue {
     const foundIndex = this.items.findIndex(x => x.room == this.activeData.room && x.timeSlot == this.activeData.timeSlot);
     const itemCopy = [...this.items]
     itemCopy[foundIndex][this.activeData.date] = this.cellData;
-    docRef = db.collection('dates').doc('test2');
+    docRef = db.collection('instance').doc(this.$root.$instanceId);
     batch.set(docRef, {data: itemCopy});
 
     try {
