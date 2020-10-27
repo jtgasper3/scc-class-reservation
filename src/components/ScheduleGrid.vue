@@ -5,7 +5,8 @@
   <b-table
       :sticky-header="winHeight"
       :no-border-collapse="true"
-      responsive="md"
+      :tbody-tr-class="rowClass"
+      responsive
       :items="items"
       :fields="fields"
       small
@@ -23,7 +24,6 @@
         <div
           v-if="data.item.room === '0'"
           class="text-nowrap"
-          style="border: 1px solid black;"
         >  
           {{ data.item.timeSlot }}
         </div>
@@ -37,14 +37,11 @@
       <template #cell()="data">
         <div
           v-if="data.item.room === '0'"
-          class="text-nowrap"
         >
         &nbsp;
         </div>
         <div
           v-else-if="data.value !== ''"
-          class="text-nowrap p-1"
-          style="border: 1px solid black;"
           @click="updateData(data.field.key, data.item.room, data.item.timeSlot)"
         >
           {{data.value}}
@@ -52,8 +49,7 @@
         <div
           v-else
           @click="updateData(data.field.key, data.item.room, data.item.timeSlot)"
-          class="text-nowrap p-3"
-          style="border: 1px solid black;"
+          class="p-3"
         >
           &nbsp;
         </div>
@@ -145,6 +141,12 @@ export default class ScheduleGrid extends Vue {
     window.removeEventListener('offline', this.updateOnlineStatus);
   }
 
+  private rowClass(item: Record<string,unknown>, type: unknown) {
+        if (!item || type !== 'row') return 'header-divider'
+        if (item.room === '0') return 'timeslot-divider'
+        return 'cell'
+  }
+
   private onResize(): void {
       this.windowHeight = window.innerHeight-reduction;
   }
@@ -208,10 +210,33 @@ export default class ScheduleGrid extends Vue {
 </script>
 
 <style>
+  table thead tr th {
+    border: white solid 2px !important;
+  }
+  .timeslot-divider th {
+    border: black solid 2px !important;
+  }
+  .timeslot-divider td {
+    border-top: black solid 1px !important;
+    border-bottom: black solid 1px !important;
+  }
+  .cell td {
+    border-top: black solid 1px !important;
+    border: black solid 1px !important;
+  }
+  
 @media print {
-    * {
-        color: inherit !important;
-        background: inherit !important;
-    }
+  td div {
+    min-width: 40px;
+    max-width: 100px;
+    white-space: normal
+  }
+}
+
+@media screen {
+  td div {
+    white-space: nowrap !important;
+    cursor: pointer;
+  }
 }
 </style>

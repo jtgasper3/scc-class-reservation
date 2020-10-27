@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid="lg" class="bg-gradient-success">
+  <b-container fluid="lg">
     <b-row class="mb-3">
       <b-col md="12" lg="5" class="text-center text-nowrap" >
         <strong>LAB SIGNUP SHEET FOR ALL STUDENTS</strong>
@@ -55,3 +55,9 @@ export default class Home extends Vue {
   }
 }
 </script>
+
+<style>
+@page {
+  margin: 0.25in;
+}
+</style>
