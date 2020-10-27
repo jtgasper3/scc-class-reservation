@@ -4,12 +4,17 @@
       <b-col>
         <strong>
           Print out current as of	{{ now | dateFormat('M/D h:mm a') }}<br />
-          To sign-up or make changes, go to {{ shortUrl }}<br />
-          or scan the QR Code with your phone's camera
+          <span v-if="shortUrl">
+            To sign-up or make changes, go to {{ shortUrl }}<br />
+            or scan the QR Code with your phone's camera
+          </span>
         </strong>
       </b-col>
       <b-col>
-        <img src="@/assets/scc-210-resv.png" class="float-right" />
+        <img
+          v-if="shortUrl"
+          src="@/assets/scc-210-resv.png"
+          class="float-right" />
       </b-col>
     </b-row>
   </div>
