@@ -25,7 +25,6 @@ import UpdateApp from '@/mixins/appUpdate.vue'
 export default class Home extends Mixins(UpdateApp) {
 
   get instanceId(): string {
-    console.log(this.$root.$instanceId)
     return this.$root.$instanceId.length >= 10 ? this.$root.$instanceId : '';
   }
 
