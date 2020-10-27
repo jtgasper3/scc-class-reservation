@@ -75,13 +75,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { BvModalEvent } from 'bootstrap-vue';
 import ScheduleChange from '@/components/ScheduleChange.vue'
 
 import db from '@/firebase'
-
-declare type UnsubscribeHandler = () => void;
 
 const reduction = 80
 
@@ -92,7 +90,6 @@ const reduction = 80
 })
 export default class ScheduleGrid extends Vue {
   windowHeight = window.innerHeight-reduction;
-  unsubscribeHandler!: UnsubscribeHandler;
 
   showModal = false;
   activeData = { 'date': '', 'room': '', 'timeSlot': '' };
@@ -110,9 +107,10 @@ export default class ScheduleGrid extends Vue {
     { key: '7-Dec', label: '7-Dec' }
   ];
 
-  items: Record<string,unknown>[]=[];
   online = navigator.onLine;
   showBackOnline = false;
+
+  @Prop() items!: Record<string,unknown>[];
 
   get instanceId(): string {
     console.log(this.$root.$instanceId);
@@ -139,12 +137,9 @@ export default class ScheduleGrid extends Vue {
       window.addEventListener('online', this.updateOnlineStatus);
       window.addEventListener('offline', this.updateOnlineStatus);
     })
-    
-    this.loadData();
   }
 
   beforeDestroy(): void { 
-    this.unsubscribeHandler()
     window.removeEventListener('resize', this.onResize); 
     window.removeEventListener('online', this.updateOnlineStatus);
     window.removeEventListener('offline', this.updateOnlineStatus);
@@ -157,14 +152,6 @@ export default class ScheduleGrid extends Vue {
   private updateOnlineStatus(e: Event): void {
       const { type } = e;
       this.online = type === 'online';
-  }
-
-  private loadData(): void {
-    const docRef = db.collection('instance').doc(this.$root.$instanceId);
-    this.unsubscribeHandler = docRef.onSnapshot({ includeMetadataChanges: true }, doc => {
-      // this.online = doc.metadata.fromCache === false;
-      this.items = doc.data()?.data;
-    })
   }
 
   private updateData(field: string, room: string, timeSlot: string): void {

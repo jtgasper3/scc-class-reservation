@@ -12,8 +12,8 @@
       </b-col>
     </b-row>
 
-    <schedule-grid />
-    <schedule-footer />
+    <schedule-grid :items="items" />
+    <schedule-footer :shortUrl="shortUrl" />
   </b-container>
 </template>
 
@@ -22,11 +22,36 @@ import { Component, Vue } from 'vue-property-decorator';
 import ScheduleFooter from '@/components/ScheduleFooter.vue';
 import ScheduleGrid from '@/components/ScheduleGrid.vue';
 
+import db from '@/firebase'
+
+declare type UnsubscribeHandler = () => void;
+
 @Component({
   components: {
     ScheduleFooter,
     ScheduleGrid
   }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  items: Record<string,unknown>[]=[];
+  shortUrl = '';
+  unsubscribeHandler!: UnsubscribeHandler;
+
+  mounted(): void {
+    this.loadData();
+  }
+
+  beforeDestroy(): void { 
+    this.unsubscribeHandler();
+  }
+
+  private loadData(): void {
+    const docRef = db.collection('instance').doc(this.$root.$instanceId);
+    this.unsubscribeHandler = docRef.onSnapshot({ includeMetadataChanges: true }, doc => {
+      // this.online = doc.metadata.fromCache === false;
+      this.items = doc.data()?.data;
+      this.shortUrl = doc.data()?.shortUrl;
+    })
+  }
+}
 </script>

@@ -4,7 +4,7 @@
       <b-col>
         <strong>
           Print out current as of	{{ now | dateFormat('M/D h:mm a') }}<br />
-          To sign-up or make changes, go to http://bit.ly/scc-210-resv<br />
+          To sign-up or make changes, go to {{ shortUrl }}<br />
           or scan the QR Code with your phone's camera
         </strong>
       </b-col>
@@ -16,14 +16,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class ScheduleFooter extends Vue {
-  now = new Date()
+  now = new Date();
+
+  @Prop() shortUrl!: string;
 
   mounted (): void {
-    this.updateTime()
+    this.updateTime();
   }
 
   private updateTime(): void {
