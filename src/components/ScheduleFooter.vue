@@ -11,10 +11,13 @@
         </strong>
       </b-col>
       <b-col>
-        <img
+        <qrcode-vue
           v-if="shortUrl"
-          src="@/assets/scc-210-resv.png"
-          class="float-right" />
+          :value="shortUrl"
+          :size="150"
+          level="L"
+          class="float-right"
+        />
       </b-col>
     </b-row>
   </div>
@@ -22,8 +25,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import QrcodeVue from 'qrcode.vue'
 
-@Component
+@Component({
+  components: { 
+    QrcodeVue
+  }
+})
 export default class ScheduleFooter extends Vue {
   now = new Date();
 
