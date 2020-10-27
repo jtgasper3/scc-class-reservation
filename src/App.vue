@@ -1,6 +1,15 @@
 <template>
   <div v-if="instanceId">
     <router-view />
+    <b-toast
+      v-model="updateExists"
+      no-auto-hide
+      title="App Update"
+      @click="refreshApp"
+    >
+      There is an app update. Click the button to apply it.<br />
+      <b-button @click="refreshApp">Refresh</b-button>
+    </b-toast>
   </div>
   <p v-else>
     Please use the link in the invite to join your board.
@@ -8,11 +17,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Mixins } from 'vue-property-decorator';
 import db from './firebase';
+import UpdateApp from '@/mixins/appUpdate.vue'
 
 @Component
-export default class Home extends Vue {
+export default class Home extends Mixins(UpdateApp) {
 
   get instanceId(): string {
     console.log(this.$root.$instanceId)

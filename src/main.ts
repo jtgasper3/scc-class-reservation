@@ -15,7 +15,7 @@ Vue.use(BootstrapVue);
 Vue.use(VueFilterDateFormat);
 Vue.component('BIconXCircle', BIconXCircle);
 
-const vm = new Vue({
+new Vue({
   data: {instanceId: '/'},
   router,
   render: (h) => h(App),

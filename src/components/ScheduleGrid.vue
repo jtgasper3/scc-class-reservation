@@ -204,15 +204,14 @@ export default class ScheduleGrid extends Vue {
 
       this.$bvToast.toast('Reservation saved', {
         variant: 'info',
-        appendToast: true
+        isStatus: true
       });
     } catch(err) {
       this.$bvToast.toast('There was a problem saving the request. Please try again, or try again in a few minutes.', {
         title: 'Problem Saving',
         toaster: 'b-toaster-top-full',
         solid: true,
-        variant: 'danger',
-        appendToast: true
+        variant: 'danger'
       });
       console.log(err);
       bvModalEvt.preventDefault();
